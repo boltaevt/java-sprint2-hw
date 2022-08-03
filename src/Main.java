@@ -1,75 +1,66 @@
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        YearlyReport yreport = new YearlyReport(2021, "resources/y.2021.csv");
-        MonthlyReport mreport1 = new MonthlyReport(01, "resources/m.202101.csv");
-        MonthlyReport mreport2 = new MonthlyReport(02, "resources/m.202102.csv");
-        MonthlyReport mreport3 = new MonthlyReport(03, "resources/m.202103.csv");
 
+        YearlyReport yreport = new YearlyReport();
+        MonthlyReport mreport = new MonthlyReport();
+        boolean yearlyReportHasBeenRead = false;
+        boolean monthlyReportHasBeenRead = false;
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
             printMenu();
             int command = scanner.nextInt();
             if (command == 1) {
-                if ((mreport1 != null) & (mreport2 != null) & (mreport3 != null)) {
-                    System.out.println("Всё хорошо, месячные отчеты считаны.");
-                }
-                else {
-                    System.out.println("Где-то закралась ошибка.");
-                }
+                mreport.readMonthlyReport();
+                monthlyReportHasBeenRead = true;
             } else if (command == 2) {
-                if (yreport != null) {
-                    System.out.println("Годовой отчёт считан");
-                }
-                else {
-                    System.out.println("Где-то закралась ошибка.");
-                }
+                yreport.readYearlyReport();
+                yearlyReportHasBeenRead = true;
             } else if (command == 3) {
-                //сверить доходы за январь
-                if ((mreport1.profit() == yreport.profitJan()) & (mreport1.expenditure() == yreport.expenditureJan())) {
-                    System.out.println("С данными за январь всё хорошо.");
+                if ((monthlyReportHasBeenRead) & (yearlyReportHasBeenRead)) {
+                    if ((Objects.equals(mreport.profitMonth().get(0), yreport.profitMonthsInYearlyReport().get(0))) & (Objects.equals(mreport.expenditureByMonths().get(0), yreport.expenditureInYear().get(0)))) {
+                        System.out.println("С январем проблем нет!");
+                    } else {
+                        System.out.println("Error in January data");
+                    };
+                    if ((Objects.equals(mreport.profitMonth().get(1), yreport.profitMonthsInYearlyReport().get(1))) & (Objects.equals(mreport.expenditureByMonths().get(1), yreport.expenditureInYear().get(1)))) {
+                        System.out.println("С февралем проблем нет!");
+                    } else {
+                        System.out.println("Error in February data");
+                    };
+                    if ((Objects.equals(mreport.profitMonth().get(2), yreport.profitMonthsInYearlyReport().get(2))) & (Objects.equals(mreport.expenditureByMonths().get(2), yreport.expenditureInYear().get(2)))) {
+                        System.out.println("С мартом проблем нет!");
+                    } else {
+                        System.out.println("Error in March data");
+                    }
                 } else {
-                    System.out.println("Ошибка в данных за январь.");
-                }
-                if ((mreport2.profit() == yreport.profitFeb()) & (mreport2.expenditure() == yreport.expenditureFeb())) {
-                    System.out.println("С данными за февраль всё хорошо.");
-                } else {
-                    System.out.println("Ошибка в данных за февраль.");
-                }
-                if ((mreport3.profit() == yreport.profitMar()) & (mreport3.expenditure() == yreport.expenditureMar())) {
-                    System.out.println("С данными за март всё хорошо.");
-                } else {
-                    System.out.println("Ошибка в данных за март.");
+                    System.out.println("ERROOOOR");
                 }
             } else if (command == 4) {
-                mreport1.printMonthName();
-                mreport1.maxExpense();
-                mreport1.maxProfit();
-                System.out.println();
-                mreport2.printMonthName();
-                mreport2.maxExpense();
-                mreport2.maxProfit();
-                System.out.println();
-                mreport3.printMonthName();
-                mreport3.maxExpense();
-                mreport3.maxProfit();
+                if (monthlyReportHasBeenRead) {
+                    mreport.printMonthName();
+                } else {
+                    System.out.println("Сначала необходимо считать отчёты!");
+                }
             } else if (command == 5) {
-                yreport.printYearlyReport();
+                if (yearlyReportHasBeenRead) {
+                    yreport.printYearlyReport();
+                } else {
+                    System.out.println("Сначала необходимо считать отчёт!");
+                }
             } else if (command == 0) {
-                System.out.println("Вы вышли из программы. Будем признательны вашему ревью снова.");
+                System.out.println("Вы вышли из программы. Будем признательны вашему ревью.");
                 return;
 
             } else {
                 System.out.println("Такой команды нет.");
             }
         }
-
-
     }
-
     public static void printMenu() {
         System.out.println("1 - Считать все месячные отчёты.");
         System.out.println("2 - Считать годовой отчёт.");
@@ -78,6 +69,4 @@ public class Main {
         System.out.println("5 - Вывести информацию о годовом отчёте");
         System.out.println("0 - Выйти");
     }
-
 }
-

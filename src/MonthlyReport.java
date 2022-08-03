@@ -4,136 +4,35 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class MonthlyReport {
-    int month;
-    ArrayList<MRecord> rows = new ArrayList<> ();
+    ArrayList<MRecord> rows = new ArrayList<>();
 
-    public MonthlyReport(int month, String path) {
-        this.month = month;
-        String content = readFileContentsOrNull(path);
-        String[] lines = content.split("\n");
-        for (int i = 1; i < lines.length; i++) {
-            String line = lines[i];
-            String[] parts = line.split(",");
-            String itemName = (parts[0]);
-            boolean isExpense = Boolean.parseBoolean(parts[1]);
-            int quantity = Integer.parseInt(parts[2]);
-            int sumOfOne = Integer.parseInt(parts[3]);
-            MRecord record = new MRecord(itemName, isExpense, quantity, sumOfOne);
-            rows.add(record);
-        }
-    }
-
-    public void printMonthName() {
-        if (month == 1) {
-            System.out.println("Январь");
-        } else if (month == 2) {
-            System.out.println("Февраль");
-        } else if (month == 3) {
-            System.out.println("Март");
-        } else {
-            System.out.println("Информация об иных месяцах в данный момент отсутствует");
-        }
-    }
-
-    public void maxExpense() {
-        int max = 0;
-        String maxItemName = " ";
-        for (MRecord row : rows) {
-            if (row.isExpense) {
-                if (row.quantity * row.sumOfOne > max) {
-                    max = row.quantity * row.sumOfOne;
-                    maxItemName = row.itemName;
-                }
+    public void readMonthlyReport() {
+        for (int i = 1; i < 4; i++) {
+            String path = ("resources/m.20210" + i + ".csv");
+            String content = readFileContentsOrNull(path);
+            String[] lines = content.split("\n");
+            for (int j = 1; j < lines.length; j++) {
+                String line = lines[j];
+                String[] parts = line.split(",");
+                int month = i;
+                //System.out.println(month);
+                String itemName = (parts[0]);
+                //System.out.println(itemName);
+                boolean isExpense = Boolean.parseBoolean(parts[1]);
+                //System.out.println(isExpense);
+                int quantity = Integer.parseInt(parts[2]);
+                //System.out.println(quantity);
+                int sumOfOne = Integer.parseInt(parts[3]);
+                //System.out.println(sumOfOne);
+                MRecord record = new MRecord(month, itemName, isExpense, quantity, sumOfOne);
+                //System.out.println(record);
+                rows.add(record);
+                //System.out.println(rows);
             }
         }
-        System.out.println("\nСамая большая простая трата: " + max + "\nНазвание товара: " + maxItemName);
+        System.out.println("Все месячные отчёты успешно считаны!");
     }
 
-    public void maxProfit() {
-        int max = 0;
-        String maxProfitItemName = " ";
-        for (MRecord row : rows) {
-            if (!row.isExpense) {
-                if (row.quantity * row.sumOfOne > max) {
-                    max = row.quantity * row.sumOfOne;
-                    maxProfitItemName = row.itemName;
-                }
-            }
-        }
-        System.out.println("\nСамый большой доход: " + max + "\nНазвание товара: " + maxProfitItemName);
-    }
-    public int profit() {
-        int profit = 0;
-        for (MRecord row : rows) {
-            if (!row.isExpense) {
-                profit += row.quantity * row.sumOfOne;
-            }
-        }
-        return profit;
-    }
-
-    public int expenditure() {
-        int expenditure = 0;
-        for (MRecord row : rows) {
-            if (row.isExpense) {
-                expenditure += row.quantity * row.sumOfOne;
-            }
-        }
-        return expenditure;
-    }
-
-    /*
-        public void printMonthlyReport() {
-            System.out.println("\nГодовой отчёт за " + year + " год.");
-            System.out.println("\nПрибыль по каждому месяцу составила:");
-            int averExpend = 0;
-            int averProfit = 0;
-            int netProfit1 = 0;
-            int netProfit2 = 0;
-            int netProfit3 = 0;
-
-            for (YRecord row : rows) {
-                if (!row.isExpense) {
-                    row.amount = -row.amount;
-                    averExpend -= row.amount;
-
-                    if (row.month == 1) {
-                        netProfit1 += row.amount;
-                    } else if (row.month == 2) {
-                        netProfit2 += row.amount;
-                    } else {
-                        netProfit3 += row.amount;
-                    }
-                    //System.out.println(row.amount);
-                } else {
-                    averProfit += row.amount;
-
-                    if (row.month == 1) {
-                        netProfit1 += row.amount;
-                    } else if (row.month == 2) {
-                        netProfit2 += row.amount;
-                    } else {
-                        netProfit3 += row.amount;
-                    }
-                }
-            }
-            averProfit = averProfit / 3;
-            averExpend = averExpend / 3;
-            System.out.println("\nПрибыль за январь составила: " + netProfit1);
-            System.out.println("\nПрибыль за февраль составила: " + netProfit2);
-            System.out.println("\nПрибыль за март составила: " + netProfit3);
-
-            // Понимаю, что реализация метода в части подсчета прибыли за месяц неоптимальна.
-            // Был бы признателен комментарию как лучше реализовать.
-            // Например, думал добавлять, если true, вычитать, если false, при условии,
-            // что месяцы совпадают, но не понимаю как это сделать.
-
-            System.out.println("\nСредний расход за все месяцы в году составил: " + averExpend + " канадских долларов.");
-            System.out.println("\nСредний доход за все месяцы в году составил: " + averProfit + " канадских долларов.\n");
-        }
-
-
-    */
     private String readFileContentsOrNull(String path) {
         try {
             return Files.readString(Path.of(path));
@@ -143,14 +42,114 @@ public class MonthlyReport {
         }
     }
 
-    //public void readYReport() {
-    //  System.out.println("\nВы успешно считали годовой отчёт, если не видите ошибки и программа выполняется\n\n:))\n");
-    //}
-    //понимаю, что метод readFileContentsOrNull отвечает за считывание отчёта.
-    //но отчёт создается и считывается в момент получения конструктором вводных.
-    //не понимаю как обратиться именно к методу по считыванию при соответствующей команде в консоли.
-    //Или просто включить создание конструктора в соответствующую команду в Main?
+    public void printMonthName() {
+        String maxExpenseItemName1 = "";
+        String maxExpenseItemName2 = "";
+        String maxExpenseItemName3 = "";
+        String maxProfitItemName1 = "";
+        String maxProfitItemName2 = "";
+        String maxProfitItemName3 = "";
+        int max1 = 0;
+        int max2 = 0;
+        int max3 = 0;
+        int max4 = 0;
+        int max5 = 0;
+        int max6 = 0;
+        for (MRecord row : rows) {
+            if ((row.month == 1) & (row.isExpense)) {
+                if (row.quantity * row.sumOfOne > max1) {
+                    max1 = row.quantity * row.sumOfOne;
+                    maxExpenseItemName1 = row.itemName;
+                }
+            }
+        }
+        for (MRecord row : rows) {
+            if ((row.month == 2) & (row.isExpense)) {
+                if (row.quantity * row.sumOfOne > max2) {
+                    max2 = row.quantity * row.sumOfOne;
+                    maxExpenseItemName2 = row.itemName;
+                }
+            }
+        }
+        for (MRecord row : rows) {
+            if ((row.month == 3) & (row.isExpense)) {
+                if (row.quantity * row.sumOfOne > max3) {
+                    max3 = row.quantity * row.sumOfOne;
+                    maxExpenseItemName3 = row.itemName;
+                }
+            }
+        }
+        for (MRecord row : rows) {
+            if ((row.month == 1) & (!row.isExpense)) {
+                if (row.quantity * row.sumOfOne > max4) {
+                    max4 = row.quantity * row.sumOfOne;
+                    maxProfitItemName1 = row.itemName;
+                }
+            }
+        }
+        for (MRecord row : rows) {
+            if ((row.month == 2) & (!row.isExpense)) {
+                if (row.quantity * row.sumOfOne > max5) {
+                    max5 = row.quantity * row.sumOfOne;
+                    maxProfitItemName2 = row.itemName;
+                }
+            }
+        }
+        for (MRecord row : rows) {
+            if ((row.month == 3) & (!row.isExpense)) {
+                if (row.quantity * row.sumOfOne > max6) {
+                    max6 = row.quantity * row.sumOfOne;
+                    maxProfitItemName3 = row.itemName;
+                }
+            }
+        }
+        System.out.println("В январе самый большой расход прошел по статье: " + maxExpenseItemName1 + " и составил: " + max1 + "\nСамый большой доход принесла статья: " + maxProfitItemName1 + "\nДоход составил: " + max4);
+        System.out.println("В феврале самый большой расход прошел по статье: " + maxExpenseItemName2 + " и составил: " + max2 + "\nСамый большой доход принесла статья: " + maxProfitItemName2 + "\nДоход составил: " + max5);
+        System.out.println("В марте самый большой расход прошел по статье: " + maxExpenseItemName3 + " и составил: " + max3 + "\nСамый большой доход принесла статья: " + maxProfitItemName3 + "\nДоход составил: " + max6);
+    }
 
+    public ArrayList<Integer> profitMonth() {
+        ArrayList<Integer> resProfitMonth = new ArrayList<Integer>();
+        int profit1 = 0;
+        int profit2 = 0;
+        int profit3 = 0;
+        for (MRecord row : rows) {
+            if (!row.isExpense) {
+                if (row.month == 1) {
+                    profit1 += row.quantity * row.sumOfOne;
+                } else if (row.month == 2) {
+                    profit2 += row.quantity * row.sumOfOne;
+                } else if (row.month == 3) {
+                    profit3 += row.quantity * row.sumOfOne;
+                }
+            }
+        }
+        resProfitMonth.add(profit1);
+        resProfitMonth.add(profit2);
+        resProfitMonth.add(profit3);
+        System.out.println(resProfitMonth);
+        return resProfitMonth;
+    }
+
+    public ArrayList<Integer> expenditureByMonths () {
+        ArrayList<Integer> expenditureByMonths = new ArrayList<>();
+        int expenditure1 = 0;
+        int expenditure2 = 0;
+        int expenditure3 = 0;
+        for (MRecord row : rows) {
+            if (row.isExpense) {
+                if (row.month == 1) {
+                    expenditure1 += row.quantity * row.sumOfOne;
+                } else if (row.month == 2) {
+                    expenditure2 += row.quantity * row.sumOfOne;
+                } else if (row.month == 3) {
+                    expenditure3 += row.quantity * row.sumOfOne;
+                }
+            }
+        }
+        expenditureByMonths.add(expenditure1);
+        expenditureByMonths.add(expenditure2);
+        expenditureByMonths.add(expenditure3);
+        return expenditureByMonths;
+    }
 }
-
-
