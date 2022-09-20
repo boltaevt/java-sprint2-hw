@@ -14,14 +14,10 @@ public class YearlyReport {
             String line = lines[i];
             String[] parts = line.split(",");
             int month = Integer.parseInt(parts[0]);
-            //System.out.println(month);
             int amount = Integer.parseInt(parts[1]);
-            //System.out.println(amount);
             boolean isExpense = Boolean.parseBoolean(parts[2]);
-            //System.out.println(isExpense);
             YRecord record = new YRecord(month, amount, isExpense);
             rows.add(record);
-            //System.out.println(rows.get(0).amount);
         }
         System.out.println("Годовой отчёт успешно считан!");
     }
@@ -35,94 +31,73 @@ public class YearlyReport {
         }
     }
 
-    public void printYearlyReport() {
-        System.out.println("\nПрибыль по каждому месяцу составила:\n");
-
-        int averageExpenditure = 0;
-        int averageProfit = 0;
-        int netProfit1 = 0;
-        int netProfit2 = 0;
-        int netProfit3 = 0;
-
+    public ArrayList<Integer> profitsMonthlyInYear() {
+        ArrayList<Integer> profits = new ArrayList<>();
+        int profit = 0;
         for (YRecord row : rows) {
-            if (!row.isExpense) {
-                row.amount = -row.amount;
-                averageExpenditure -= row.amount;
-                if (row.month == 1) {
-                    netProfit1 += row.amount;
-                } else if (row.month == 2) {
-                    netProfit2 += row.amount;
-                } else {
-                    netProfit3 += row.amount;
-                }
-            } else {
-                averageProfit += row.amount;
-                if (row.month == 1) {
-                    netProfit1 += row.amount;
-                } else if (row.month == 2) {
-                    netProfit2 += row.amount;
-                } else {
-                    netProfit3 += row.amount;
-                }
+            if (row.month == 1 && !row.isExpense) {
+                profit += row.amount;
             }
         }
-        averageProfit = averageProfit / 3;
-        averageExpenditure = averageExpenditure / 3;
-        System.out.println("\nПрибыль за январь составила: " + netProfit1);
-        System.out.println("\nПрибыль за февраль составила: " + netProfit2);
-        System.out.println("\nПрибыль за март составила: " + netProfit3);
-        System.out.println("\nСредний расход за все месяцы в году составил: " + averageExpenditure);
-        System.out.println("\nСредний доход за все месяцы в году составил: " + averageProfit);
-    }
-
-    //
-    // Не исправил сравнение годового отчёта и месячных отчётов. Предлагается использовать HashMap, где ключем будет либом номер месяца, либо его название.
-    // Правильно ли понимаю, что предлагается заменить использование списка в классе YearlyReport? Зато пока делал пришла идея с сохранением значений -
-    // в ArrayList, кажется, что это похоже на то, что предлагалось вами.
-    //
-    public ArrayList<Integer> profitMonthsInYearlyReport() {
-        ArrayList<Integer> resProfitMonthsInYearlyReport = new ArrayList<Integer>();
-        int profitJan = 0;
-        int profitFeb = 0;
-        int profitMar = 0;
+        profits.add(profit);
+        profit = 0;
         for (YRecord row : rows) {
-            if (!row.isExpense) {
-                if (row.month == 1) {
-                    profitJan = row.amount;
-                } else if (row.month == 2) {
-                    profitFeb = row.amount;
-                } else if (row.month == 3) {
-                    profitMar = row.amount;
-                }
+            if (row.month == 2 && !row.isExpense) {
+                profit += row.amount;
             }
         }
-        resProfitMonthsInYearlyReport.add(profitJan);
-        resProfitMonthsInYearlyReport.add(profitFeb);
-        resProfitMonthsInYearlyReport.add(profitMar);
-        //System.out.println(resProfitMonthsInYearlyReport);
-        return resProfitMonthsInYearlyReport;
+        profits.add(profit);
+        profit = 0;
+        for (YRecord row : rows) {
+            if (row.month == 3 && !row.isExpense) {
+                profit += row.amount;
+            }
+        }
+        profits.add(profit);
+        return profits;
     }
-    public ArrayList<Integer> expenditureInYear() {
-        ArrayList<Integer> expenditureInYear = new ArrayList<>();
-        int expenditureJan = 0;
-        int expenditureFeb = 0;
-        int expenditureMar = 0;
+    public ArrayList<Integer> expensesMonthlyInYear() {
+        ArrayList<Integer> expenses = new ArrayList<>();
+        int expense = 0;
+        for (YRecord row : rows) {
+            if (row.month == 1 && row.isExpense) {
+                expense += row.amount;
+            }
+        }
+        expenses.add(expense);
+        expense = 0;
+        for (YRecord row : rows) {
+            if (row.month == 2 && row.isExpense) {
+                expense += row.amount;
+            }
+        }
+        expenses.add(expense);
+        expense = 0;
+        for (YRecord row : rows) {
+            if (row.month == 3 && row.isExpense) {
+                expense += row.amount;
+            }
+        }
+        expenses.add(expense);
+        return expenses;
+    }
+    public void getAverageExpenses() {
+        int averageExpense = 0;
         for (YRecord row : rows) {
             if (row.isExpense) {
-                if (row.month == 1) {
-                    expenditureJan = row.amount;
-                } else if (row.month == 2) {
-                    expenditureFeb = row.amount;
-                }
-                else if (row.month == 3) {
-                    expenditureMar = row.amount;
-                }
+                averageExpense += row.amount;
             }
         }
-        expenditureInYear.add(expenditureJan);
-        expenditureInYear.add(expenditureFeb);
-        expenditureInYear.add(expenditureMar);
-        return expenditureInYear;
+        System.out.println("Средний расход составил: " + (averageExpense / 3));
+    }
+    public void getAverageProfits() {
+        int averageProfit = 0;
+        for (YRecord row : rows) {
+            if (!row.isExpense) {
+                averageProfit += row.amount;
+            }
+        }
+        System.out.println("Средний доход составил: " + (averageProfit / 3));
     }
 }
 

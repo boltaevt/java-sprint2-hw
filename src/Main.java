@@ -7,48 +7,68 @@ public class Main {
 
         YearlyReport yreport = new YearlyReport();
         MonthlyReport mreport = new MonthlyReport();
-        boolean yearlyReportHasBeenRead = false;
-        boolean monthlyReportHasBeenRead = false;
+
+        boolean yRHasBeenRead = false;
+        boolean mRHasBeenRead = false;
+
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
+
             printMenu();
+
             int command = scanner.nextInt();
+
             if (command == 1) {
                 mreport.readMonthlyReport();
-                monthlyReportHasBeenRead = true;
+                mRHasBeenRead = true;
+
             } else if (command == 2) {
                 yreport.readYearlyReport();
-                yearlyReportHasBeenRead = true;
+                yRHasBeenRead = true;
             } else if (command == 3) {
-                if ((monthlyReportHasBeenRead) & (yearlyReportHasBeenRead)) {
-                    if ((Objects.equals(mreport.profitMonth().get(0), yreport.profitMonthsInYearlyReport().get(0))) & (Objects.equals(mreport.expenditureByMonths().get(0), yreport.expenditureInYear().get(0)))) {
-                        System.out.println("С январем проблем нет!");
+                if ((mRHasBeenRead) && (yRHasBeenRead)) {
+                    if ((Objects.equals(mreport.findMonthlyProfits().get(0), yreport.profitsMonthlyInYear().get(0))) &&
+                            (Objects.equals(mreport.findMonthlyExpenses().get(0), yreport.expensesMonthlyInYear().get(0)))) {
+                        System.out.println("В январе все хорошо");
                     } else {
                         System.out.println("Error in January data");
-                    };
-                    if ((Objects.equals(mreport.profitMonth().get(1), yreport.profitMonthsInYearlyReport().get(1))) & (Objects.equals(mreport.expenditureByMonths().get(1), yreport.expenditureInYear().get(1)))) {
-                        System.out.println("С февралем проблем нет!");
+                    }
+                    if ((Objects.equals(mreport.findMonthlyProfits().get(1), yreport.profitsMonthlyInYear().get(1))) &&
+                            (Objects.equals(mreport.findMonthlyExpenses().get(1), yreport.expensesMonthlyInYear().get(1))))  {
+                        System.out.println("В феврале все хорошо");
                     } else {
                         System.out.println("Error in February data");
-                    };
-                    if ((Objects.equals(mreport.profitMonth().get(2), yreport.profitMonthsInYearlyReport().get(2))) & (Objects.equals(mreport.expenditureByMonths().get(2), yreport.expenditureInYear().get(2)))) {
-                        System.out.println("С мартом проблем нет!");
+                    }
+                    if ((Objects.equals(mreport.findMonthlyProfits().get(2), yreport.profitsMonthlyInYear().get(2))) &&
+                            (Objects.equals(mreport.findMonthlyExpenses().get(2), yreport.expensesMonthlyInYear().get(2))))  {
+                        System.out.println("В марте все хорошо");
                     } else {
-                        System.out.println("Error in March data");
+                        System.out.println("Error in data for March");
                     }
                 } else {
                     System.out.println("ERROOOOR");
                 }
+
             } else if (command == 4) {
-                if (monthlyReportHasBeenRead) {
-                    mreport.printMonthName();
+                if (mRHasBeenRead) {
+                    System.out.println("Вам доступна следующая информация по месяцам: ");
+                    System.out.println();
+                    mreport.findMonthlyMostExpensiveItem();
+                    mreport.findProfitableItem();
                 } else {
                     System.out.println("Сначала необходимо считать отчёты!");
                 }
             } else if (command == 5) {
-                if (yearlyReportHasBeenRead) {
-                    yreport.printYearlyReport();
+                if (yRHasBeenRead) {
+                    System.out.println("Вам доступна следующая информация по годовому отчету:\n");
+                    yreport.profitsMonthlyInYear();
+                    System.out.println();
+                    yreport.expensesMonthlyInYear();
+                    System.out.println();
+                    yreport.getAverageExpenses();
+                    System.out.println();
+                    yreport.getAverageProfits();
                 } else {
                     System.out.println("Сначала необходимо считать отчёт!");
                 }
