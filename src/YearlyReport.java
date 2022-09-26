@@ -19,14 +19,14 @@ public class YearlyReport {
             YRecord record = new YRecord(month, amount, isExpense);
             rows.add(record);
         }
-        System.out.println("Годовой отчёт успешно считан!");
+        System.out.println("Yearly report has been successfully read!");
     }
 
     private String readFileContentsOrNull(String path) {
         try {
             return Files.readString(Path.of(path));
         } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл. Возможно, вы указали некорректный путь к файлу.");
+            System.out.println("Pathway to file cannot be read.");
             return null;
         }
     }
@@ -34,53 +34,38 @@ public class YearlyReport {
     public ArrayList<Integer> profitsMonthlyInYear() {
         ArrayList<Integer> profits = new ArrayList<>();
         int profit = 0;
-        for (YRecord row : rows) {
-            if (row.month == 1 && !row.isExpense) {
-                profit += row.amount;
+
+        for (int i = 1; i < 4; i++) {
+            for (YRecord row : rows) {
+                if (row.month == i && !row.isExpense) {
+                    profit += row.amount;
+                }
             }
+            profits.add(profit);
+            profit = 0;
+
         }
-        profits.add(profit);
-        profit = 0;
-        for (YRecord row : rows) {
-            if (row.month == 2 && !row.isExpense) {
-                profit += row.amount;
-            }
-        }
-        profits.add(profit);
-        profit = 0;
-        for (YRecord row : rows) {
-            if (row.month == 3 && !row.isExpense) {
-                profit += row.amount;
-            }
-        }
-        profits.add(profit);
         return profits;
     }
+
     public ArrayList<Integer> expensesMonthlyInYear() {
         ArrayList<Integer> expenses = new ArrayList<>();
         int expense = 0;
-        for (YRecord row : rows) {
-            if (row.month == 1 && row.isExpense) {
-                expense += row.amount;
+
+        for (int i = 1; i < 4; i++) {
+            for (YRecord row : rows) {
+                if (row.month == i && row.isExpense) {
+                    expense += row.amount;
+                }
             }
-        }
-        expenses.add(expense);
-        expense = 0;
-        for (YRecord row : rows) {
-            if (row.month == 2 && row.isExpense) {
-                expense += row.amount;
-            }
-        }
-        expenses.add(expense);
-        expense = 0;
-        for (YRecord row : rows) {
-            if (row.month == 3 && row.isExpense) {
-                expense += row.amount;
-            }
+            expenses.add(expense);
+            expense = 0;
         }
         expenses.add(expense);
         return expenses;
     }
+
+
     public void getAverageExpenses() {
         int averageExpense = 0;
         for (YRecord row : rows) {
@@ -88,7 +73,7 @@ public class YearlyReport {
                 averageExpense += row.amount;
             }
         }
-        System.out.println("Средний расход составил: " + (averageExpense / 3));
+        System.out.println("Average expense: " + (averageExpense / 3));
     }
     public void getAverageProfits() {
         int averageProfit = 0;
@@ -97,8 +82,6 @@ public class YearlyReport {
                 averageProfit += row.amount;
             }
         }
-        System.out.println("Средний доход составил: " + (averageProfit / 3));
+        System.out.println("Average profit: " + (averageProfit / 3));
     }
 }
-
-

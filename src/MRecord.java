@@ -1,4 +1,5 @@
 public class MRecord {
+    // MRecord Class is created to structure information related to monthly reports.
     String itemName;
     boolean isExpense;
     int quantity;
@@ -12,7 +13,6 @@ public class MRecord {
         this.sumOfOne = sumOfOne;
         this.month = month;
     }
-
 }
 
 

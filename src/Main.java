@@ -1,3 +1,6 @@
+
+import java.io.File;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -5,8 +8,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        YearlyReport yreport = new YearlyReport();
-        MonthlyReport mreport = new MonthlyReport();
+        YearlyReport yReport = new YearlyReport();
+        MonthlyReport mReport = new MonthlyReport();
 
         boolean yRHasBeenRead = false;
         boolean mRHasBeenRead = false;
@@ -20,73 +23,84 @@ public class Main {
             int command = scanner.nextInt();
 
             if (command == 1) {
-                mreport.readMonthlyReport();
-                mRHasBeenRead = true;
+                if (!mRHasBeenRead) {
+                    mReport.readMonthlyReport();
+                    mRHasBeenRead = true;
+                } else {
+                    System.out.println("The reports have already been read.");
+                }
 
             } else if (command == 2) {
-                yreport.readYearlyReport();
-                yRHasBeenRead = true;
+                if (!yRHasBeenRead) {
+
+                    yReport.readYearlyReport();
+                    yRHasBeenRead = true;
+                } else {
+                    System.out.println("Report has already been read.");
+                }
+
             } else if (command == 3) {
                 if ((mRHasBeenRead) && (yRHasBeenRead)) {
-                    if ((Objects.equals(mreport.findMonthlyProfits().get(0), yreport.profitsMonthlyInYear().get(0))) &&
-                            (Objects.equals(mreport.findMonthlyExpenses().get(0), yreport.expensesMonthlyInYear().get(0)))) {
-                        System.out.println("В январе все хорошо");
+                    if ((Objects.equals(mReport.findMonthlyProfits().get(0), yReport.profitsMonthlyInYear().get(0))) &&
+                            (Objects.equals(mReport.findMonthlyExpenses().get(0), yReport.expensesMonthlyInYear().get(0)))) {
+                        System.out.println("All good with the info for January");
                     } else {
-                        System.out.println("Error in January data");
+                        System.err.println("Error in January data");
                     }
-                    if ((Objects.equals(mreport.findMonthlyProfits().get(1), yreport.profitsMonthlyInYear().get(1))) &&
-                            (Objects.equals(mreport.findMonthlyExpenses().get(1), yreport.expensesMonthlyInYear().get(1))))  {
-                        System.out.println("В феврале все хорошо");
+                    if ((Objects.equals(mReport.findMonthlyProfits().get(1), yReport.profitsMonthlyInYear().get(1))) &&
+                            (Objects.equals(mReport.findMonthlyExpenses().get(1), yReport.expensesMonthlyInYear().get(1))))  {
+                        System.out.println("All good with the info for February");
                     } else {
-                        System.out.println("Error in February data");
+                        System.err.println("Error in February data");
                     }
-                    if ((Objects.equals(mreport.findMonthlyProfits().get(2), yreport.profitsMonthlyInYear().get(2))) &&
-                            (Objects.equals(mreport.findMonthlyExpenses().get(2), yreport.expensesMonthlyInYear().get(2))))  {
-                        System.out.println("В марте все хорошо");
+                    if ((Objects.equals(mReport.findMonthlyProfits().get(2), yReport.profitsMonthlyInYear().get(2))) &&
+                            (Objects.equals(mReport.findMonthlyExpenses().get(2), yReport.expensesMonthlyInYear().get(2))))  {
+                        System.out.println("All good with the info for March");
                     } else {
-                        System.out.println("Error in data for March");
+                        System.err.println("Error in data for March");
                     }
-                } else {
-                    System.out.println("ERROOOOR");
+                    // Have excluded the "ERRROORRR" message since if there is any inconsistency
+                    // it will be detected by the above code
                 }
 
             } else if (command == 4) {
                 if (mRHasBeenRead) {
-                    System.out.println("Вам доступна следующая информация по месяцам: ");
-                    System.out.println();
-                    mreport.findMonthlyMostExpensiveItem();
-                    mreport.findProfitableItem();
+                    System.out.println("The following information is available regarding monthly reports:");
+                    mReport.printMonth();
+
                 } else {
-                    System.out.println("Сначала необходимо считать отчёты!");
+                    System.err.println("You first need to read the reports! Use command no. 1");
                 }
+
             } else if (command == 5) {
                 if (yRHasBeenRead) {
-                    System.out.println("Вам доступна следующая информация по годовому отчету:\n");
-                    yreport.profitsMonthlyInYear();
+                    System.out.println("The following information is available for the yearly report:\n");
+                    yReport.profitsMonthlyInYear();
                     System.out.println();
-                    yreport.expensesMonthlyInYear();
+                    yReport.expensesMonthlyInYear();
                     System.out.println();
-                    yreport.getAverageExpenses();
+                    yReport.getAverageExpenses();
                     System.out.println();
-                    yreport.getAverageProfits();
+                    yReport.getAverageProfits();
                 } else {
-                    System.out.println("Сначала необходимо считать отчёт!");
+                    System.err.println("First need to read the reports! i.e. press command no.2");
                 }
+
             } else if (command == 0) {
-                System.out.println("Вы вышли из программы. Будем признательны вашему ревью.");
+                System.out.println("You have now exited the program. Will aprreciate your rreview!");
                 return;
 
             } else {
-                System.out.println("Такой команды нет.");
+                System.err.println("There is no such command.");
             }
         }
     }
     public static void printMenu() {
-        System.out.println("1 - Считать все месячные отчёты.");
-        System.out.println("2 - Считать годовой отчёт.");
-        System.out.println("3 - Сверить отчёты.");
-        System.out.println("4 - Вывести информацию о всех месячных отчётах.");
-        System.out.println("5 - Вывести информацию о годовом отчёте");
-        System.out.println("0 - Выйти");
+        System.out.println("1 - Read monthly reports.");
+        System.out.println("2 - Read yearly report.");
+        System.out.println("3 - Compare monthly and yearly reports.");
+        System.out.println("4 - Print out info re monthly reports.");
+        System.out.println("5 - Print out info re yearly report");
+        System.out.println("0 - Exit");
     }
 }
