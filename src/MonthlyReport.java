@@ -1,6 +1,3 @@
-import org.w3c.dom.ls.LSOutput;
-
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,28 +9,30 @@ public class MonthlyReport {
     ArrayList<MRecord> rows = new ArrayList<>();
 
     public void readMonthlyReport() {
-
-        List files = new ArrayList<>();
-        List directories = new ArrayList<>();
+        List<String> files = new ArrayList<>();
         String fileExtension = ".csv";
-
-        File folder = new File("/Users/boltaevt/Dev/java-sprint2-hw/resources");
+        File folder = new File("resources");
         File[] listOfFiles = folder.listFiles();
-
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
-                if (listOfFiles[i].getName().endsWith(fileExtension) && listOfFiles[i].getName().startsWith("m")) {
+                if ((listOfFiles[i].getName().endsWith(fileExtension)) && (listOfFiles[i].getName().startsWith("m"))) {
                     files.add(listOfFiles[i].getName());
                 }
             }
         }
-
-        for (int i = 1; i <= files.size(); i++) {
-            String path = ("resources/" + listOfFiles[i].getName());
+        for (int i = 0; i < files.size(); i++) {
+            String path = ("resources/" + files.get(i));
             String content = readFileContentsOrNull(path);
             String[] lines = content.split("\n");
             for (int j = 1; j < lines.length; j++) {
-                int month = i;
+                int month;
+                if (files.get(i).endsWith((i+1) + ".csv")) {
+                    month = i+1;
+                } else {
+                    month = 0;
+                    System.err.println("The file being read has an incorrect name");
+                    break;
+                }
                 String line = lines[j];
                 String[] parts = line.split(",");
                 String itemName = (parts[0]);
@@ -46,6 +45,7 @@ public class MonthlyReport {
         }
         System.out.println("All monthly reports successfully read!");
     }
+
     private String readFileContentsOrNull(String path) {
         try {
             return Files.readString(Path.of(path));
@@ -54,6 +54,7 @@ public class MonthlyReport {
             return null;
         }
     }
+
     public ArrayList<Integer> findMonthlyExpenses() {
         ArrayList<Integer> expenses = new ArrayList<>();
         int expense = 0;
@@ -85,34 +86,31 @@ public class MonthlyReport {
         return profits;
     }
 
-
-
-
     public void printMonth(){
         ProfitableItem prItem = new ProfitableItem();
         ExpensiveItem exItem = new ExpensiveItem();
         prItem.addProfitableItem();
         exItem.addExpensiveItem();
         for (int i = 0; i < 3; i++) {
-            String monthName = "";
+            String monthName;
             switch (i){
                 case 0: monthName = "January";
-                    System.out.println("The most profitable item in " + monthName + " is "
-                    + prItem.profitableItems.get(i).itemName + " with the cost of " + prItem.profitableItems.get(i).cost);
-                    System.out.println("The most expensive item in " + monthName + " is "
-                            + exItem.expensiveItems.get(i).itemName + " with the cost of " + exItem.expensiveItems.get(i).cost);
+                    System.out.println(monthName + "\tmost profitable item name:\t"
+                    + prItem.profitableItems.get(i).itemName + "\tprofit:\t" + prItem.profitableItems.get(i).cost);
+                    System.out.println(monthName + "\tmost expensive item name:\t"
+                            + exItem.expensiveItems.get(i).itemName + "\texpense amount:\t" + exItem.expensiveItems.get(i).cost);
                     break;
                 case 1: monthName = "February";
-                    System.out.println("The most profitable item in " + monthName + " is "
-                            + prItem.profitableItems.get(i).itemName + " with the cost of " + prItem.profitableItems.get(i).cost);
-                    System.out.println("The most expensive item in " + monthName + " is "
-                            + exItem.expensiveItems.get(i).itemName + " with the cost of " + exItem.expensiveItems.get(i).cost);
+                    System.out.println(monthName + "\tmost profitable item name:\t"
+                            + prItem.profitableItems.get(i).itemName + "\tprofit:\t" + prItem.profitableItems.get(i).cost);
+                    System.out.println(monthName + "\tmost expensive item name:\t"
+                            + exItem.expensiveItems.get(i).itemName + "\texpense amount:\t" + exItem.expensiveItems.get(i).cost);
                     break;
                 case 2: monthName = "March";
-                    System.out.println("The most profitable item in " + monthName + " is "
-                            + prItem.profitableItems.get(i).itemName + " with the cost of " + prItem.profitableItems.get(i).cost);
-                    System.out.println("The most expensive item in " + monthName + " is "
-                            + exItem.expensiveItems.get(i).itemName + " with the cost of " + exItem.expensiveItems.get(i).cost);
+                    System.out.println(monthName + "\tmost profitable item name:\t"
+                            + prItem.profitableItems.get(i).itemName + "\tprofit:\t" + prItem.profitableItems.get(i).cost);
+                    System.out.println(monthName + "\tmost expensive item name:\t"
+                            + exItem.expensiveItems.get(i).itemName + "\texpense amount:\t" + exItem.expensiveItems.get(i).cost);
                     break;
                 default:
                     System.out.println("There is presently no information on the month in case.");
@@ -131,7 +129,7 @@ public class MonthlyReport {
         }
         ArrayList <ProfitableItem> profitableItems = new ArrayList<>();
 
-        public ArrayList<ProfitableItem> addProfitableItem() {
+        public void addProfitableItem() {
             String itemName = "";
             int profitOfItem = 0;
             for (int i = 1; i < 4; i++) {
@@ -148,9 +146,9 @@ public class MonthlyReport {
                 profitableItems.add(profItem);
                 profitOfItem = 0;
             }
-            return profitableItems;
         }
     }
+
     public class ExpensiveItem {
         String itemName;
         int cost;
@@ -164,7 +162,7 @@ public class MonthlyReport {
 
         ArrayList<ExpensiveItem> expensiveItems = new ArrayList<>();
 
-        public ArrayList<ExpensiveItem> addExpensiveItem() {
+        public void addExpensiveItem() {
             String itemName = "";
             int costOfItem = 0;
             for (int i = 1; i < 4; i++) {
@@ -180,7 +178,6 @@ public class MonthlyReport {
                 expensiveItems.add(expItem);
                 costOfItem = 0;
             }
-            return expensiveItems;
         }
     }
 

@@ -27,7 +27,8 @@ public class Main {
                     mReport.readMonthlyReport();
                     mRHasBeenRead = true;
                 } else {
-                    System.out.println("The reports have already been read.");
+                    System.err.println("The reports have already been read. " +
+                            "\nExit the program to reread the reports.");
                 }
 
             } else if (command == 2) {
@@ -36,7 +37,7 @@ public class Main {
                     yReport.readYearlyReport();
                     yRHasBeenRead = true;
                 } else {
-                    System.out.println("Report has already been read.");
+                    System.err.println("Report has already been read. \nExit the program to read the reports anew.");
                 }
 
             } else if (command == 3) {
@@ -59,8 +60,8 @@ public class Main {
                     } else {
                         System.err.println("Error in data for March");
                     }
-                    // Have excluded the "ERRROORRR" message since if there is any inconsistency
-                    // it will be detected by the above code
+                } else {
+                    System.err.println("Please first read the monthly and yearly reports.");
                 }
 
             } else if (command == 4) {
@@ -75,13 +76,10 @@ public class Main {
             } else if (command == 5) {
                 if (yRHasBeenRead) {
                     System.out.println("The following information is available for the yearly report:\n");
-                    yReport.profitsMonthlyInYear();
-                    System.out.println();
-                    yReport.expensesMonthlyInYear();
-                    System.out.println();
-                    yReport.getAverageExpenses();
-                    System.out.println();
-                    yReport.getAverageProfits();
+                    yReport.printInfoYear();
+
+                    //Пустые строки оставлял для читаемости текста. Убрал.
+
                 } else {
                     System.err.println("First need to read the reports! i.e. press command no.2");
                 }
